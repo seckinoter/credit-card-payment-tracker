@@ -8,6 +8,9 @@ import { View, TextInput, Logo, Button, FormErrorMessage } from '../components';
 import { Images, Colors, auth } from '../config';
 import { useTogglePasswordVisibility } from '../hooks';
 import { signupValidationSchema } from '../utils';
+import 'firebase/firestore';
+import 'firebase/app';
+import firebase from "firebase/compat/app";
 
 export const SignupScreen = ({ navigation }) => {
   const [errorState, setErrorState] = useState('');
@@ -24,7 +27,11 @@ export const SignupScreen = ({ navigation }) => {
   const handleSignup = async values => {
     const { email, password } = values;
 
-    createUserWithEmailAndPassword(auth, email, password).catch(error =>
+    createUserWithEmailAndPassword(auth, email, password).then(() => {
+      firebase.firestore().collection('users').doc(email).set({
+        uid : auth.currentUser.uid,
+      })
+    }).catch(error =>
       setErrorState(error.message)
     );
   };
@@ -35,7 +42,7 @@ export const SignupScreen = ({ navigation }) => {
         {/* LogoContainer: consits app logo and screen title */}
         <View style={styles.logoContainer}>
           <Logo uri={Images.logo} />
-          <Text style={styles.screenTitle}>Create a new account!</Text>
+          <Text style={styles.screenTitle}>Yeni Hesap Oluşturun</Text>
         </View>
         {/* Formik Wrapper */}
         <Formik
@@ -60,7 +67,7 @@ export const SignupScreen = ({ navigation }) => {
               <TextInput
                 name='email'
                 leftIconName='email'
-                placeholder='Enter email'
+                placeholder='Email adresinizi girin'
                 autoCapitalize='none'
                 keyboardType='email-address'
                 textContentType='emailAddress'
@@ -73,7 +80,7 @@ export const SignupScreen = ({ navigation }) => {
               <TextInput
                 name='password'
                 leftIconName='key-variant'
-                placeholder='Enter password'
+                placeholder='Parolanızı girin'
                 autoCapitalize='none'
                 autoCorrect={false}
                 secureTextEntry={passwordVisibility}
@@ -91,7 +98,7 @@ export const SignupScreen = ({ navigation }) => {
               <TextInput
                 name='confirmPassword'
                 leftIconName='key-variant'
-                placeholder='Enter password'
+                placeholder='Parolanızı tekrar girin'
                 autoCapitalize='none'
                 autoCorrect={false}
                 secureTextEntry={confirmPasswordVisibility}
@@ -112,7 +119,7 @@ export const SignupScreen = ({ navigation }) => {
               ) : null}
               {/* Signup button */}
               <Button style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Signup</Text>
+                <Text style={styles.buttonText}>Kaydol</Text>
               </Button>
             </>
           )}
@@ -121,7 +128,7 @@ export const SignupScreen = ({ navigation }) => {
         <Button
           style={styles.borderlessButtonContainer}
           borderless
-          title={'Already have an account?'}
+          title={'Zaten bir hesabınız mı var? Giriş Yapın!'}
           onPress={() => navigation.navigate('Login')}
         />
       </KeyboardAwareScrollView>
@@ -142,7 +149,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '700',
     color: Colors.black,
-    paddingTop: 20
+    paddingTop: 20,
+    textAlign: 'center'
   },
   button: {
     width: '100%',
@@ -159,7 +167,7 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   borderlessButtonContainer: {
-    marginTop: 16,
+    marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center'
   }

@@ -1,6 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import Constants from 'expo-constants';
+import { getFirestore } from "firebase/firestore"
+import 'firebase/firestore'
+// import firebase from 'firebase/app';
+// import 'firebase/firestore';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 // add firebase config
 const firebaseConfig = {
@@ -13,9 +20,12 @@ const firebaseConfig = {
 };
 
 // initialize firebase
-initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
+firebase.firestore().settings({experimentalForceLongPolling: true});
 
 // initialize auth
 const auth = getAuth();
+export const db = getFirestore(app);
+
 
 export { auth };

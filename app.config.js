@@ -2,15 +2,15 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'Expo Firebase Starter',
-    slug: 'expo-firebase',
+    name: 'Credit Card Payment Tracker',
+    slug: 'credit-card-payment-tracker',
     privacy: 'public',
-    platforms: ['ios', 'android'],
-    version: '0.15.0',
+    platforms: ['ios'],
+    version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/flame.png',
+    icon: './assets/credit-card-tracker_whitebg_512.png',
     splash: {
-      image: './assets/splash.png',
+      image: './assets/credit-card-tracker-splash.png',
       resizeMode: 'cover',
       backgroundColor: '#F57C00'
     },
@@ -19,7 +19,8 @@ export default {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
-      supportsTablet: true
+      supportsTablet: false,
+      bundleIdentifier: "com.seckinoter.credit-card-tracker"
     },
     extra: {
       apiKey: process.env.API_KEY,
@@ -28,6 +29,19 @@ export default {
       storageBucket: process.env.STORAGE_BUCKET,
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
       appId: process.env.APP_ID
+    },
+    plugins: ["sentry-expo"],
+    hooks: {
+      postPublish: [
+        {
+          file: "sentry-expo/upload-sourcemaps",
+          config: {
+            organization: "seckin-oter",
+            project: "creditcardpaymenttracker",
+            authToken: process.env.CONFIG_AUTH_TOKEN
+          }
+        }
+      ]
     }
   }
 };

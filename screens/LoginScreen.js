@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Formik } from 'formik';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { View, TextInput, Logo, Button, FormErrorMessage } from '../components';
+import { View, TextInput, Logo, Button, FormErrorMessage, LoadingIndicator } from '../components';
 import { Images, Colors, auth } from '../config';
 import { useTogglePasswordVisibility } from '../hooks';
 import { loginValidationSchema } from '../utils';
@@ -16,18 +16,20 @@ export const LoginScreen = ({ navigation }) => {
 
   const handleLogin = values => {
     const { email, password } = values;
-    signInWithEmailAndPassword(auth, email, password).catch(error =>
+    signInWithEmailAndPassword(auth, email, password).then(() => {
+      // if (auth.currentUser)
+      //   registerForPushNotificationsAsync();
+    }).catch(error =>
       setErrorState(error.message)
     );
   };
+
   return (
     <>
       <View isSafe style={styles.container}>
-        <KeyboardAwareScrollView enableOnAndroid={true}>
-          {/* LogoContainer: consits app logo and screen title */}
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={'false'}>
           <View style={styles.logoContainer}>
-            <Logo uri={Images.logo} />
-            <Text style={styles.screenTitle}>Welcome back!</Text>
+            <Logo uri={Images.logo}/>
           </View>
           <Formik
             initialValues={{
@@ -50,7 +52,7 @@ export const LoginScreen = ({ navigation }) => {
                 <TextInput
                   name='email'
                   leftIconName='email'
-                  placeholder='Enter email'
+                  placeholder='Email adresiniz'
                   autoCapitalize='none'
                   keyboardType='email-address'
                   textContentType='emailAddress'
@@ -66,7 +68,7 @@ export const LoginScreen = ({ navigation }) => {
                 <TextInput
                   name='password'
                   leftIconName='key-variant'
-                  placeholder='Enter password'
+                  placeholder='Şifreniz'
                   autoCapitalize='none'
                   autoCorrect={false}
                   secureTextEntry={passwordVisibility}
@@ -87,32 +89,24 @@ export const LoginScreen = ({ navigation }) => {
                 ) : null}
                 {/* Login button */}
                 <Button style={styles.button} onPress={handleSubmit}>
-                  <Text style={styles.buttonText}>Login</Text>
+                  <Text style={styles.buttonText}>Giriş Yap</Text>
                 </Button>
               </>
             )}
           </Formik>
-          {/* Button to navigate to SignupScreen to create a new account */}
           <Button
-            style={styles.borderlessButtonContainer}
+            style={{...styles.borderlessButtonContainer, paddingTop:20}}
             borderless
-            title={'Create a new account?'}
-            onPress={() => navigation.navigate('Signup')}
-          />
-          <Button
-            style={styles.borderlessButtonContainer}
-            borderless
-            title={'Forgot Password'}
+            title={'Şifremi Unuttum'}
             onPress={() => navigation.navigate('ForgotPassword')}
           />
+          <Button
+            style={styles.borderlessButtonContainer}
+            borderless
+            title={'Yeni Hesap Oluştur'}
+            onPress={() => navigation.navigate('Signup')}
+          />
         </KeyboardAwareScrollView>
-      </View>
-
-      {/* App info footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Expo Firebase Starter App (based on managed workflow)
-        </Text>
       </View>
     </>
   );
@@ -125,7 +119,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12
   },
   logoContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop:30,
+    paddingBottom:50
   },
   screenTitle: {
     fontSize: 32,

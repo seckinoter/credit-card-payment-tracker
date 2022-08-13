@@ -24,8 +24,9 @@ export const ForgotPasswordScreen = ({ navigation }) => {
   return (
     <View isSafe style={styles.container}>
       <View style={styles.innerContainer}>
-        <Text style={styles.screenTitle}>Reset your password</Text>
+        <Text style={styles.screenTitle}>Şifrenizi sıfırlayın</Text>
       </View>
+      <View style={styles.formArea}>
       <Formik
         initialValues={{ email: '' }}
         validationSchema={passwordResetSchema}
@@ -40,11 +41,10 @@ export const ForgotPasswordScreen = ({ navigation }) => {
           handleBlur
         }) => (
           <>
-            {/* Email input field */}
             <TextInput
               name='email'
               leftIconName='email'
-              placeholder='Enter email'
+              placeholder='Mail adresinizi giriniz'
               autoCapitalize='none'
               keyboardType='email-address'
               textContentType='emailAddress'
@@ -53,24 +53,22 @@ export const ForgotPasswordScreen = ({ navigation }) => {
               onBlur={handleBlur('email')}
             />
             <FormErrorMessage error={errors.email} visible={touched.email} />
-            {/* Display Screen Error Mesages */}
             {errorState !== '' ? (
               <FormErrorMessage error={errorState} visible={true} />
             ) : null}
-            {/* Password Reset Send Email  button */}
             <Button style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Send Reset Email</Text>
+              <Text style={styles.buttonText}>Sıfırlama Mailini Gönder</Text>
             </Button>
           </>
         )}
       </Formik>
-      {/* Button to navigate to Login screen */}
       <Button
         style={styles.borderlessButtonContainer}
         borderless
-        title={'Go back to Login'}
+        title={'Giriş Ekranına Dön'}
         onPress={() => navigation.navigate('Login')}
       />
+      </View>
     </View>
   );
 };
@@ -79,16 +77,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
   },
   innercontainer: {
-    alignItems: 'center'
+    alignItems: 'center',
+
   },
   screenTitle: {
     fontSize: 32,
     fontWeight: '700',
     color: Colors.black,
-    paddingTop: 20
+    paddingTop: 20,
+    textAlign:'center',
+    paddingTop:50
   },
   button: {
     width: '100%',
@@ -108,5 +109,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  formArea: {
+    flex: 1,
+    marginTop: 100
   }
 });
